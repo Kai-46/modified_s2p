@@ -124,6 +124,7 @@ def disp_map_to_point_cloud(out, disp, mask, rpc1, rpc2, H1, H2, A, colors,
     command += ' {} {} {} {}'.format(utm, lbb, xbb, msk)
     common.run(command)
 
+
 def multidisp_map_to_point_cloud(out, disp_list, rpc_ref, rpc_list, colors,
                                  utm_zone=None, llbbx=None, xybbx=None):
     """
@@ -150,6 +151,7 @@ def multidisp_map_to_point_cloud(out, disp_list, rpc_ref, rpc_list, colors,
     command += ' --color {}'.format(colors)
     command += ' {} {} {}'.format(utm, lbb, xbb)
     common.run(command)
+
 
 def height_map_to_point_cloud(cloud, heights, rpc, H=None, crop_colorized='',
                               off_x=None, off_y=None, ascii_ply=False,

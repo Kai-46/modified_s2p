@@ -440,6 +440,7 @@ def multidisparities_to_ply(tile):
     if cfg['clean_intermediate']:
         common.remove(colors)
 
+
 def mean_heights(tile):
     """
     """
@@ -552,6 +553,7 @@ def heights_to_ply(tile):
         common.remove(os.path.join(out_dir,
                                    'cloud_water_image_domain_mask.png'))
 
+
 def plys_to_dsm(tile):
     """
     """
@@ -637,8 +639,20 @@ def global_dsm(tiles):
                          "%s %s %s" % (projwin, out_dsm_vrt, out_dsm_tif)]))
 
 
-# ALL_STEPS is a ordonned dictionary : key = 'stepname' : value = is_distributed (True/False)
+# @kai courtesy of Rafael
+def global_pointcloud(tiles):
+    """
+    """
+    if common.which('pdal') is None:
+        print("failed to find pdal bin, aborting pointcloud creation")
+    plys = [os.path.join(os.path.abspath(t['dir']), 'cloud.ply') for t in tiles]
+    output_path = os.path.join(cfg['out_dir'], "cloud.las")
+    common.run("pdal merge {} {}".format(" ".join(plys), output_path))
+
+
+# ALL_STEPS is a ordered dictionary : key = 'stepname' : value = is_distributed (True/False)
 # initialization : pass in a sequence of tuples
+# @kai
 ALL_STEPS = [('initialisation', False),
              ('local-pointing', True),
              ('global-pointing', False),
@@ -649,7 +663,8 @@ ALL_STEPS = [('initialisation', False),
              ('global-mean-heights', False),
              ('heights-to-ply', True),
              ('local-dsm-rasterization', True),
-             ('global-dsm-rasterization', False) ]
+             ('global-dsm-rasterization', False),
+             ('global-pointcloud', False)]
 ALL_STEPS = collections.OrderedDict(ALL_STEPS)
 
 
@@ -742,6 +757,12 @@ def main(user_cfg, steps=ALL_STEPS):
         global_dsm(tiles)
         common.print_elapsed_time()
 
+    # @kai
+    if 'global-pointcloud' in steps:
+        print('computing global point cloud...')
+        global_pointcloud(tiles)
+        common.print_elapsed_time()
+
     # cleanup
     common.garbage_cleanup()
     common.print_elapsed_time(since_first_call=True)
@@ -793,7 +814,28 @@ def read_config_file(config_file):
     return user_cfg
 
 
-if __name__ == '__main__':
+def for_debugging():
+    # ALL_STEPS is a ordered dictionary : key = 'stepname' : value = is_distributed (True/False)
+    # initialization : pass in a sequence of tuples
+    ALL_STEPS = [('initialisation', False),
+                 ('local-pointing', True),
+                 ('global-pointing', False),
+                 ('rectification', True),
+                 ('matching', True),
+                 ('triangulation', True),
+                 ('disparity-to-height', True),
+                 ('heights-to-ply', True),
+                 ('local-dsm-rasterization', True),
+                 ('global-dsm-rasterization', False),
+                 ('global-pointcloud', False)]
+    ALL_STEPS = collections.OrderedDict(ALL_STEPS)
+
+    user_cfg = read_config_file('testdata/input_pair/config.json')
+    # user_cfg = read_config_file('testdata/jacksonville.json')
+    main(user_cfg, ALL_STEPS)
+
+
+def for_deploying():
     parser = argparse.ArgumentParser(description=('S2P: Satellite Stereo '
                                                   'Pipeline'))
     parser.add_argument('config', metavar='config.json',
@@ -805,9 +847,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     user_cfg = read_config_file(args.config)
-
     main(user_cfg, args.step)
 
+
+if __name__ == '__main__':
+    for_deploying()
+    # for_debugging()
+
+
     # Backup input file for sanity check
-    if not args.config.startswith(os.path.abspath(cfg['out_dir']+os.sep)):
-        shutil.copy2(args.config,os.path.join(cfg['out_dir'],'config.json.orig'))
+    # if not args.config.startswith(os.path.abspath(cfg['out_dir']+os.sep)):
+    #     shutil.copy2(args.config,os.path.join(cfg['out_dir'],'config.json.orig'))

@@ -1,0 +1,2 @@
+/home/kai/:/s2p/data/
+/tmp/:/s2p/tmp/

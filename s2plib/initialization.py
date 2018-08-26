@@ -6,7 +6,8 @@
 from __future__ import print_function
 import os
 import sys
-import utm
+# @kai
+# import utm
 import json
 import copy
 import shutil
@@ -132,8 +133,9 @@ def build_cfg(user_cfg):
     y = cfg['roi']['y']
     w = cfg['roi']['w']
     h = cfg['roi']['h']
-    
-    cfg['roi'] = {'x': x, 'y': y, 'w': w, 'h': h}
+
+    # @kai
+    # cfg['roi'] = {'x': x, 'y': y, 'w': w, 'h': h}
 
     # get utm zone
     if 'utm_zone' not in cfg or cfg['utm_zone'] is None:
@@ -308,7 +310,8 @@ def tiles_full_info(tw, th, tiles_txt, create_masks=False):
         else:
             with open(tiles_txt, 'r') as f_tiles:
                 for config_json in f_tiles:
-                    tile = {}
+                    # @kai
+                    # tile = {}
                     with open(os.path.join(cfg['out_dir'],
                                            config_json.rstrip(os.linesep)), 'r') as f_config:
                         tile_cfg = json.load(f_config)

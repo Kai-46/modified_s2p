@@ -1,0 +1,37 @@
+{
+  "out_dir" : "/absolute/path/to/output/directory",
+  "images" : [
+    { "img" : "/absolute/path/to/NTF/file",
+      "rpc" : "/absolute/path/to/XML/file" },
+    { "img" : "/absolute/path/to/NTF/file",
+      "rpc" : "/absolute/path/to/XML/file" }
+    ],
+  "roi_utm" : {
+    "utm_band" : 17,
+    "hemisphere" : "N",
+    "x" : 435532.000,
+    "y" : 3354107.000,
+    "w" : 1385.0,
+    "h" : 1413.0
+  },
+  "full_img" : false,
+  "matching_algorithm" : "mgm",
+  "horizontal_margin" : 20,
+  "vertical_margin" : 5,
+  "sift_match_thresh": 0.6,
+  "disp_range_extra_margin" : 0.2,
+  "n_gcp_per_axis" : 5,
+  "epipolar_thresh" : 0.5,
+  "temporary_dir" : "/tmp",
+  "tile_size" : 500,
+  "clean_tmp" : true,
+  "clean_intermediate" : false,
+  "fusion_thresh" : 3,
+  "disp_range_method" : "sift",
+  "skip_existing" : false,
+  "msk_erosion": 0,
+  "dsm_resolution": 0.3,
+  "omp_num_threads": 4,
+  "debug": true,
+  "max_pointing_error" : 0.5
+}

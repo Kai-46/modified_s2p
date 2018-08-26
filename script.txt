@@ -1,0 +1,11 @@
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python /s2p/s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_1.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_2.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_3.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_4.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_5.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_6.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_7.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_8.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_9.json
+/phoenix/S3/kz298/docker_run.sh kai46/s2p:latest python s2p.py /phoenix/S3/kz298/result/configs/jacksonville/config_10.json
+
