@@ -274,11 +274,6 @@ class RPCModel:
         lin = cLin*self.linScale + self.linOff
         return col, lin, alt
 
-    def inverse_estimate_norm(self, cLon, cLat, cAlt):
-        cCol = apply_rfm(self.inverseColNum, self.inverseColDen, cLat, cLon, cAlt)
-        cLin = apply_rfm(self.inverseLinNum, self.inverseLinDen, cLat, cLon, cAlt)
-
-        return cCol, cLin
 
     def direct_estimate(self, col, lin, alt, return_normalized=False):
 
@@ -296,63 +291,6 @@ class RPCModel:
            return cLon, cLat, cAlt
         return lon, lat, alt
 
-    def direct_estimate_norm(self, cCol, cRow, cAlt):
-        # target point: Xf (f for final)
-        Xf = np.vstack([cCol, cRow]).T
-
-        # use 3 corners of the lon, lat domain and project them into the image
-        # to get the first estimation of (lon, lat)
-        # EPS is 2 for the first iteration, then 0.1.
-        lon = -np.ones(len(Xf))
-        lat = -np.ones(len(Xf))
-        EPS = 2
-        x0 = apply_rfm(self.inverseColNum, self.inverseColDen, lat, lon, cAlt)
-        y0 = apply_rfm(self.inverseLinNum, self.inverseLinDen, lat, lon, cAlt)
-        x1 = apply_rfm(self.inverseColNum, self.inverseColDen, lat, lon + EPS, cAlt)
-        y1 = apply_rfm(self.inverseLinNum, self.inverseLinDen, lat, lon + EPS, cAlt)
-        x2 = apply_rfm(self.inverseColNum, self.inverseColDen, lat + EPS, lon, cAlt)
-        y2 = apply_rfm(self.inverseLinNum, self.inverseLinDen, lat + EPS, lon, cAlt)
-
-        n = 0
-        while not np.all((x0 - cCol) ** 2 + (y0 - cRow) ** 2 < 1e-18):
-            X0 = np.vstack([x0, y0]).T
-            X1 = np.vstack([x1, y1]).T
-            X2 = np.vstack([x2, y2]).T
-            e1 = X1 - X0
-            e2 = X2 - X0
-            u = Xf - X0
-
-            # project u on the base (e1, e2): u = a1*e1 + a2*e2
-            # the exact computation is given by:
-            #   M = np.vstack((e1, e2)).T
-            #   a = np.dot(np.linalg.inv(M), u)
-            # but I don't know how to vectorize this.
-            # Assuming that e1 and e2 are orthogonal, a1 is given by
-            # <u, e1> / <e1, e1>
-            num = np.sum(np.multiply(u, e1), axis=1)
-            den = np.sum(np.multiply(e1, e1), axis=1)
-            a1 = np.divide(num, den)
-
-            num = np.sum(np.multiply(u, e2), axis=1)
-            den = np.sum(np.multiply(e2, e2), axis=1)
-            a2 = np.divide(num, den)
-
-            # use the coefficients a1, a2 to compute an approximation of the
-            # point on the gound which in turn will give us the new X0
-            lon += a1 * EPS
-            lat += a2 * EPS
-
-            # update X0, X1 and X2
-            EPS = .1
-            x0 = apply_rfm(self.inverseColNum, self.inverseColDen, lat, lon, cAlt)
-            y0 = apply_rfm(self.inverseLinNum, self.inverseLinDen, lat, lon, cAlt)
-            x1 = apply_rfm(self.inverseColNum, self.inverseColDen, lat, lon + EPS, cAlt)
-            y1 = apply_rfm(self.inverseLinNum, self.inverseLinDen, lat, lon + EPS, cAlt)
-            x2 = apply_rfm(self.inverseColNum, self.inverseColDen, lat + EPS, lon, cAlt)
-            y2 = apply_rfm(self.inverseLinNum, self.inverseLinDen, lat + EPS, lon, cAlt)
-            n += 1
-
-        return lon, lat, cAlt
 
     def direct_estimate_iterative(self, col, row, alt, return_normalized=False):
         """

@@ -35,7 +35,8 @@ RUN apt-get update && apt-get install -y pdal python-pdal
 # RUN git clone https://github.com/MISS3D/s2p.git --recursive
 # RUN cd s2p && make all
 
+# RUN make --version
 # build image from the current directory
 WORKDIR /s2p
 ADD . /s2p
-RUN make -j4 all
+RUN make all

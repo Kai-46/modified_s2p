@@ -653,15 +653,14 @@ def global_pointcloud(tiles):
 # ALL_STEPS is a ordered dictionary : key = 'stepname' : value = is_distributed (True/False)
 # initialization : pass in a sequence of tuples
 # @kai
+# note that for a stereo pair, some of the steps are skipped
+# check the function 'main' for more information
 ALL_STEPS = [('initialisation', False),
              ('local-pointing', True),
              ('global-pointing', False),
              ('rectification', True),
              ('matching', True),
              ('triangulation', True),
-             ('disparity-to-height', True),
-             ('global-mean-heights', False),
-             ('heights-to-ply', True),
              ('local-dsm-rasterization', True),
              ('global-dsm-rasterization', False),
              ('global-pointcloud', False)]
@@ -851,8 +850,8 @@ def for_deploying():
 
 
 if __name__ == '__main__':
-    for_deploying()
-    # for_debugging()
+    # for_deploying()
+    for_debugging()
 
 
     # Backup input file for sanity check
